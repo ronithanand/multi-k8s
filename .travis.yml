@@ -3,33 +3,18 @@ services:
   - docker
 
 before_install:
-  - docker build -t achliopa/react-test -f ./client/Dockerfile.dev ./client
-
+  - docker build -t ronithanand/react-test -f ./client/Dockerfile.dev ./client
 script:
-  - docker run achliopa/react-test npm test -- --coverage
-
+  - docker run  -e CI=true ronithanand/react-test npm run test -- --coverage
+   #- docker run -e CI=true ronithanand/docker-react npm run test
+   #- docker run -e CI=true USERNAME/docker-react npm run test
 after_success:
-  - docker build -t achliopa/multi-client ./client
-  - docker build -t achliopa/multi-nginx ./nginx
-  - docker build -t achliopa/multi-server ./server
-  - docker build -t achliopa/multi-worker ./worker
-  # log in to the docker cli
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # takes those images and push them to docker hub
-  - docker push achliopa/multi-client
-  - docker push achliopa/multi-nginx
-  - docker push achliopa/multi-server
-  - docker push achliopa/multi-worker
-
-deploy:
-  provider: elasticbeanstalk
-  region: eu-central-1
-  app: multi-docker
-  env: MultiDocker-env
-  bucket_name: elasticbeanstalk-eu-central-1-448743904882
-  bucket_path: docker-multi
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key:
-    secure: $AWS_SECRET_KEY
+    - docker build -t ronithanand/multi-client ./client
+    - docker build -t ronithanand/multi-nginx ./nginx
+    - docker build -t ronithanand/multi-server ./server
+    - docker build -t ronithanand/multi-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push  ronithanand/multi-client 
+    - docker push  ronithanand/multi-nginx 
+    - docker push  ronithanand/multi-server 
+    - docker push  ronithanand/multi-worker 

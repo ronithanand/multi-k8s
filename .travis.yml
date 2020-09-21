@@ -17,4 +17,18 @@ after_success:
     - docker push  ronithanand/multi-client 
     - docker push  ronithanand/multi-nginx 
     - docker push  ronithanand/multi-server 
-    - docker push  ronithanand/multi-worker 
+    - docker push  ronithanand/multi-worker
+deploy:
+      provider: elasticbeanstalk
+      region:     "us-east-2"
+      app: "multi-docker"
+      env: "MultiDocker-env"
+      bucket_name: "elasticbeanstalk-us-east-2-603836131781"
+      bucket_path: "multi-docker"
+      skip_cleanup: true
+    
+      on: 
+        branch: master
+      access_key_id: $AWS_ACCESS_KEY
+      secret_access_key: $AWS_SECRET_KEY
+        #secure: "$AWS_SECRET_KEY"
